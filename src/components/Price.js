@@ -1,29 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Field, useFormikContext } from 'formik';
-
 import Collapse from '@material-ui/core/Collapse';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import FormGroup from '@material-ui/core/FormGroup';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
 import { TextField } from 'formik-material-ui';
 
+
 const Price = props => {
-  const { values, setFieldValue, handleChange } = useFormikContext()
+  const { values, setFieldValue } = useFormikContext()
+  const { creditPerHourAircraft, creditPerLanding, creditPerHourInstructor, groundTraining, aircraftInMinutes, durationInMinutes, flatFee, packageType } = values
 
   const [open, setOpen] = useState(false);
   const [aircraftPrice, setAircraftPrice] = useState(true);
   const [instructorPrice, setInstructorPrice] = useState(true);
   const [landingPrice, setLandingPrice] = useState(true);
 
+
+
   const toggleAircraftPrice = () => {
     setAircraftPrice(prev => !prev)
     if (!aircraftPrice) {
-      setFieldValue("creditForAircraft", 0)
+      setFieldValue("creditPerHourAircraft", 0)
     }
   }
   const toggleInstructorPrice = () => {
@@ -39,21 +40,20 @@ const Price = props => {
     }
   }
 
-  const handlePrice = (e) => {
 
-    const { creditPerLanding, creditPerHourInstructor, creditPerHourAircraft, groundTraining, aircraftInMinutes, durationInMinutes } = values
 
-    console.table(values)
-    console.log(e.target.name)
-    const hr = Number(e.target.value)
-
-    console.log(hr)
+  const handlePrice = ({ creditPerLanding, creditPerHourInstructor, creditPerHourAircraft, groundTraining, aircraftInMinutes, durationInMinutes }) => {
     console.table({ creditPerLanding, creditPerHourInstructor, creditPerHourAircraft, groundTraining, aircraftInMinutes, durationInMinutes })
-    console.log(((durationInMinutes / 60) * (creditPerHourInstructor + creditPerHourAircraft)), ((aircraftInMinutes / 60) * creditPerHourAircraft))
-    handleChange(e)
-    // const mins = Math.abs(hr * 60) + Math.abs(values[dependingValue])
-    // setFieldValue(value, mins)
+    return (((durationInMinutes / 60) * (creditPerHourInstructor + creditPerHourAircraft)) + ((aircraftInMinutes / 60) * creditPerHourAircraft) + ((groundTraining / 60) * creditPerHourInstructor))
   }
+
+  useEffect(() => {
+    setFieldValue("flatFee", handlePrice({ creditPerLanding, creditPerHourInstructor, creditPerHourAircraft, groundTraining, aircraftInMinutes, durationInMinutes }))
+  }, [setFieldValue, creditPerHourAircraft, creditPerLanding, creditPerHourInstructor, groundTraining, aircraftInMinutes, durationInMinutes]);
+
+  useEffect(() => {
+    setFieldValue("originalPrice", flatFee)
+  }, [setFieldValue, flatFee])
 
   const toggle = () => {
     setOpen(prev => !prev);
@@ -62,6 +62,7 @@ const Price = props => {
   return (
     <div>
       <Button
+        fullWidth={true}
         onClick={toggle}
       >
         Price
@@ -71,9 +72,7 @@ const Price = props => {
           <CardContent>
             <FormGroup>
 
-              <Field component={TextField} type="number" name="flatFee" label="Price"
-
-              />
+              <Field component={TextField} type="number" disabled name="flatFee" label="Price" />
 
               <Field component={TextField} type="number" name="originalPrice" label="Flat Fee" />
 
@@ -82,7 +81,6 @@ const Price = props => {
             <FormGroup>
               <Field component={TextField} type="number" name="creditPerHourAircraft" disabled={aircraftPrice} label="Aircraft Fee"
                 InputProps={{
-                  onChange: handlePrice,
                   startAdornment: (
                     <InputAdornment position="start">
                       <Checkbox

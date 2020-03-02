@@ -1,12 +1,12 @@
 import React from "react";
-import { Formik, withFormik, Form, Field } from "formik";
-// import Basic from "./Basic";
-// import Price from "./Price";/
-// import Duration from './Duration';
-// import Additional from './Additional';
+import { withFormik, Form } from "formik";
+import Basic from "./Basic";
+import Price from "./Price";
+import Duration from './Duration';
 import Other from './Other'
-// import Passenger from './Passenger'
+import Passenger from './Passenger'
 import * as Yup from "yup";
+import { createFormData } from "../helper"
 
 const BasicSchema = Yup.object().shape({
   name: Yup.string()
@@ -26,26 +26,22 @@ const BasicSchema = Yup.object().shape({
   ,
   maximumPassengers: Yup.number().moreThan(0, "At Least 1")
 
-
 });
 
 
 
 
 const NewService = ({ values, errors, }) => {
-  console.log(values)
   return (
-    <Form   >
-      {/* <Basic /> */}
-      {/* <Price /> */}
-      {/* <Duration /> */}
-      {/* <Passenger /> */}
-      {/* <Additional /> */}
+    <Form >
+      <Basic />
+      <Price />
+      <Duration />
+      <Passenger />
       <Other />
       <button type="submit">Submit</button>
       <pre>{JSON.stringify(values, null, 2)}</pre>
       <pre>{JSON.stringify(errors, null, 2)}</pre>
-
     </Form>
   );
 };
@@ -67,11 +63,11 @@ const MyEnhancedForm = withFormik({
     pricePerPassenger: 0,
     resources: [],
     hasInstructor: "true",
-    durationInMinutes: 30,
-    durationInMinutesHrs: 0,
+    durationInMinutes: 1800,
+    durationInMinutesHrs: 30,
     durationInMinutesMins: 0,
-    aircraftInMinutes: 10,
-    aircraftInMinutesHrs: 0,
+    aircraftInMinutes: 600,
+    aircraftInMinutesHrs: 10,
     aircraftInMinutesMins: 0,
     groundTraining: 0,
     groundTrainingHrs: 0,
@@ -97,25 +93,14 @@ const MyEnhancedForm = withFormik({
     closedDays: []
   }),
 
-  // validate: (values => {
-  //   const errors = {}
-  //   if (!values.name) {
-  //     errors.name = "go home"
-  //   }
-  //   if (!values.packageType) {
-  //     errors.packageType = "u suck"
-  //   }
-  //   if (!values.street) {
-  //     errors.packageType = "i suck"
-  //   }
-  //   return errors
-  // }),
-
-  // validationSchema: BasicSchema,
+  validationSchema: BasicSchema,
 
 
   handleSubmit: (values, { setSubmitting }) => {
-    console.log(values)
+    const fd = new FormData();
+    for (let [key, value] of Object.entries(values)) {
+      createFormData(fd, key, value)
+    }
     setTimeout(() => {
       alert(JSON.stringify(values, null, 2));
       setSubmitting(false);

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Field, FastField, ErrorMessage } from "formik";
+import { FastField } from "formik";
 import Collapse from '@material-ui/core/Collapse';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -8,8 +8,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from "@material-ui/core/FormHelperText";
-
 import Radio from '@material-ui/core/Radio';
 import CustomSelectField from './CustomSelectField'
 import CustomCheckBoxField from './CustomCheckBoxField'
@@ -41,7 +39,7 @@ const Basic = (props) => {
           <CardContent>
             <FormGroup >
               <CustomSelectField name="packageType" label="Pacakge Types" optionsArray={packageType} />
-              <Field
+              <FastField
                 component={TextField}
                 name="name"
                 type="text"
@@ -62,7 +60,7 @@ const Basic = (props) => {
             <FormGroup >
               <FormControl>
                 <FormLabel component="legend">Need Pilot</FormLabel>
-                <Field
+                <FastField
                   component={RadioGroup}
                   name="hasInstructor"
                 >
@@ -76,31 +74,31 @@ const Basic = (props) => {
                     control={<Radio />}
                     label="No"
                   />
-                </Field>
+                </FastField>
               </FormControl>
             </FormGroup>
 
 
             <FormGroup>
-              <Field
+              <FastField
                 component={TextField}
                 name="street"
                 type="text"
                 label="Street"
               />
-              <Field
+              <FastField
                 component={TextField}
                 name="city"
                 type="text"
                 label="City "
               />
-              <Field
+              <FastField
                 component={TextField}
                 name="state"
                 type="text"
                 label="State"
               />
-              <Field
+              <FastField
                 component={TextField}
                 name="zipCode"
                 type="text"
